@@ -1,9 +1,20 @@
+# main.py
+
+import os
 import time
-from typing import List, Dict
-from . import *
+import openai
+from typing import List
+from challenge_generator import ChallengeGenerator
+from model_evaluator import ModelEvaluator
+from risk_analyzer import RiskAnalyzer
+from feedback_integrator import FeedbackIntegrator
 
+# Set your OpenAI API key
+# Set your OpenAI API key
+openai.api_key = "xxxxxy"
+os.environ['OPENAI_API_KEY']=openai.api_key
 
-class Main:
+class CentralOrchestrator:
     def __init__(
             self, 
             challenge_generator: ChallengeGenerator, 
@@ -40,7 +51,7 @@ class Main:
 
 if __name__ == "__main__":
     # Initialize components
-    challenge_generator = ChallengeGenerator("gpt-3", vulnerability_db={})
+    challenge_generator = ChallengeGenerator("gpt-3.5-turbo", vulnerability_db={})
     model_evaluator = ModelEvaluator("gpt-4")
     risk_analyzer = RiskAnalyzer(num_risk_categories=10)
     feedback_integrator = FeedbackIntegrator("drt_feedback_report.json")
@@ -48,6 +59,11 @@ if __name__ == "__main__":
     risk_categories = ["safety", "bias", "factual_accuracy", "privacy", "security"]
 
     # Create and run the orchestrator
-    orchestrator = Main(challenge_generator, model_evaluator, risk_analyzer, 
-                                       feedback_integrator, risk_categories)
+    orchestrator = CentralOrchestrator(
+        challenge_generator, 
+        model_evaluator, 
+        risk_analyzer, 
+        feedback_integrator, 
+        risk_categories
+        )
     orchestrator.run()
